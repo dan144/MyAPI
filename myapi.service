@@ -1,0 +1,11 @@
+[Unit]
+Description=Service running MyAPI persistently
+After=network.target
+
+[Service]
+Environment=FLASK_APP=/root/myapi.py
+Environment=FLASK_DEBUG=1
+ExecStart=/bin/bash -c "flask run --host=0.0.0.0"
+
+[Install]
+WantedBy=multi-user.target
