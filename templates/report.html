@@ -1,0 +1,19 @@
+<!doctype html>
+<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}"/>
+<title>Report</title>
+{% if data is defined %}
+  <table>
+    <tr>
+      <th>Timestamp</th>
+      <th>Page</th>
+    </tr>
+    {% for key, value in data.items() %}
+    <tr>
+		<td>{{ key }}</td>
+        <td>{{ value }}</td>
+    </tr>
+	{% endfor %}
+  </table>
+{% else %}
+No page history available.
+{% endif %}
