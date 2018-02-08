@@ -4,13 +4,15 @@
 {% if data is defined %}
   <table>
     <tr>
+      <th>Book</th>
       <th>Timestamp</th>
       <th>Page</th>
     </tr>
-    {% for key, value in data.items() %}
+    {% for book, timestamp, page in data %}
     <tr>
-		<td>{{ key }}</td>
-        <td>{{ value }}</td>
+        <td>{{ book }}</td>
+        <td>{{ timestamp }}</td>
+        <td>{{ page }}</td>
     </tr>
 	{% endfor %}
   </table>
