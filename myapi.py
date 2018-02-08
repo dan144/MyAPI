@@ -13,6 +13,19 @@ app = Flask(__name__)
 def index():
 	return render_template('index.html')
 
+def chronological_slot(timestamp, page, history):
+	if len(history) == 0:
+		return 0
+	if timestamp < history[0][0] and page < history[0][1]:
+		return 0
+	elif timestamp > history[-1][0] and page > history[-1][1]:
+		return len(history)
+
+	for i in range(len(history) - 1):
+		if timestamp in range(history[i][0] + 1, history[i + 1][0]) and page in range(history[i][1] + 1, history[i + 1][1]):
+			return i+1
+	return -1
+
 def add_data(new_data):
 	data = get_data()
 	try:
@@ -24,10 +37,10 @@ def add_data(new_data):
 		# add new data to book's entry
 		if not data.get(book):
 			data[book] = []
-		if len(data[book]) == 0 or page > data[book][-1][1]:
-			data[book].append([timestamp, page])
-		else:
+		slot = chronological_slot(timestamp, page, data[book])
+		if slot == -1:
 			return False
+		data[book].insert(slot, [timestamp, page])
 
 		with open(datafile, 'w') as f:
 			json.dump(data, f, sort_keys=True)
@@ -64,3 +77,13 @@ def report():
 	if len(page_list) == 0:
 		return render_template('report.html')
 	return render_template('report.html', data=page_list)
+
+@app.route("/csv")
+def csv():
+	raw_text = ''
+	for book, page_history in get_data().items():
+		raw_text += book + ','
+		for entry in page_history:
+			raw_text += str(entry[1]) + ','
+		raw_text += '<br/>'
+	return raw_text
